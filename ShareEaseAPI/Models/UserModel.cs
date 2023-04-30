@@ -10,9 +10,7 @@ namespace ShareEaseAPI.Models
         public string password { get; set; }
         public string email { get; set; }
         public string location { get; set; }
-
         public string mobile { get; set; }
-
         public string avatar { get; set; }
     }
 

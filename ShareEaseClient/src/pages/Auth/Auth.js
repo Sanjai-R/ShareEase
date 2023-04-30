@@ -145,7 +145,6 @@ export default function Auth({ isCheck = false, isLoginContainer = false }) {
         <Button
           onClick={onOpen}
           colorScheme={isLoginContainer ? 'gray' : 'brand'}
-          size="sm"
         >
           {isLoginContainer ? 'Login' : 'Get Started'}
         </Button>
