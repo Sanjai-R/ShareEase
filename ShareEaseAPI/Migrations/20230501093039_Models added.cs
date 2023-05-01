@@ -5,7 +5,7 @@
 namespace ShareEaseAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedModels : Migration
+    public partial class Modelsadded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -54,8 +54,7 @@ namespace ShareEaseAPI.Migrations
                     location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     availability = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     categoryId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Owneruser_id = table.Column<int>(type: "int", nullable: true)
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,10 +66,11 @@ namespace ShareEaseAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Resource_Users_Owneruser_id",
-                        column: x => x.Owneruser_id,
+                        name: "FK_Resource_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "user_id");
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -79,9 +79,9 @@ namespace ShareEaseAPI.Migrations
                 column: "categoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Resource_Owneruser_id",
+                name: "IX_Resource_UserId",
                 table: "Resource",
-                column: "Owneruser_id");
+                column: "UserId");
         }
 
         /// <inheritdoc />

@@ -24,7 +24,9 @@ namespace ShareEaseAPI.Models
 
         [ForeignKey("Users")]
         public int UserId { get; set; }
-        public UserModel Owner { get; set; }
+
+
+        public UserModel Users { get; set; }
 
         public CategoryModel Category { get; set; }
     }

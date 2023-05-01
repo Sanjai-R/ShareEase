@@ -21,11 +21,7 @@ const theme = extendTheme({
   },
 
   styles: {
-    global: {
-      body: {
-        bg: '#FAFAFA',
-      },
-    },
+    global: {},
   },
 });
 export default theme;

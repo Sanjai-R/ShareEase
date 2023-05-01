@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShareEaseAPI.Data;
 
@@ -11,9 +12,11 @@ using ShareEaseAPI.Data;
 namespace ShareEaseAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230501111022_Request Models field updated")]
+    partial class RequestModelsfieldupdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,7 +190,7 @@ namespace ShareEaseAPI.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("ShareEaseAPI.Models.ResourceModel", "resource")
+                    b.HasOne("ShareEaseAPI.Models.ResourceModel", "Resource")
                         .WithMany()
                         .HasForeignKey("ResourceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -197,7 +200,7 @@ namespace ShareEaseAPI.Migrations
 
                     b.Navigation("Owner");
 
-                    b.Navigation("resource");
+                    b.Navigation("Resource");
                 });
 
             modelBuilder.Entity("ShareEaseAPI.Models.ResourceModel", b =>

@@ -26,7 +26,7 @@ namespace ShareEaseAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ResourceModel>>> GetResource()
         {
-            return await _context.Resource.ToListAsync();
+            return await _context.Resource.Include(r => r.Category).ToListAsync();
         }
 
         // GET: api/Resource/5
@@ -84,9 +84,10 @@ namespace ShareEaseAPI.Controllers
                 name = resourceModel.name,
                 description = resourceModel.description,
                 img = resourceModel.img,
-                availability = resourceModel.availability,
+                availability = "Available",
                 location = resourceModel.location,
-                categoryId = resourceModel.categoryId
+                categoryId = resourceModel.categoryId,
+                UserId = resourceModel.userId
             };
             _context.Resource.Add(res);
             await _context.SaveChangesAsync();

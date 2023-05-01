@@ -12,8 +12,8 @@ using ShareEaseAPI.Data;
 namespace ShareEaseAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20230430164651_Added Models")]
-    partial class AddedModels
+    [Migration("20230501105422_Request Models field renamed")]
+    partial class RequestModelsfieldrenamed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,7 +46,7 @@ namespace ShareEaseAPI.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("ShareEaseAPI.Models.ResourceModel", b =>
+            modelBuilder.Entity("ShareEaseAPI.Models.RequestModel", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -54,8 +54,39 @@ namespace ShareEaseAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int?>("Owneruser_id")
+                    b.Property<int>("BorrowerId")
                         .HasColumnType("int");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ResourceId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("BorrowerId");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("ResourceId");
+
+                    b.ToTable("Request");
+                });
+
+            modelBuilder.Entity("ShareEaseAPI.Models.ResourceModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -84,11 +115,34 @@ namespace ShareEaseAPI.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("Owneruser_id");
+                    b.HasIndex("UserId");
 
                     b.HasIndex("categoryId");
 
                     b.ToTable("Resource");
+                });
+
+            modelBuilder.Entity("ShareEaseAPI.Models.SubscriptionModel", b =>
+                {
+                    b.Property<int>("subId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("subId"));
+
+                    b.Property<int>("categoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
+                    b.HasKey("subId");
+
+                    b.HasIndex("categoryId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("Subscription");
                 });
 
             modelBuilder.Entity("ShareEaseAPI.Models.UserModel", b =>
@@ -122,11 +176,40 @@ namespace ShareEaseAPI.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ShareEaseAPI.Models.RequestModel", b =>
+                {
+                    b.HasOne("ShareEaseAPI.Models.UserModel", "Borrower")
+                        .WithMany("BorrowerRequests")
+                        .HasForeignKey("BorrowerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ShareEaseAPI.Models.UserModel", "Owner")
+                        .WithMany("OwnerRequests")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ShareEaseAPI.Models.ResourceModel", "Resource")
+                        .WithMany()
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Borrower");
+
+                    b.Navigation("Owner");
+
+                    b.Navigation("Resource");
+                });
+
             modelBuilder.Entity("ShareEaseAPI.Models.ResourceModel", b =>
                 {
-                    b.HasOne("ShareEaseAPI.Models.UserModel", "Owner")
+                    b.HasOne("ShareEaseAPI.Models.UserModel", "Users")
                         .WithMany()
-                        .HasForeignKey("Owneruser_id");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ShareEaseAPI.Models.CategoryModel", "Category")
                         .WithMany()
@@ -136,7 +219,33 @@ namespace ShareEaseAPI.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("Owner");
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("ShareEaseAPI.Models.SubscriptionModel", b =>
+                {
+                    b.HasOne("ShareEaseAPI.Models.CategoryModel", "Category")
+                        .WithMany()
+                        .HasForeignKey("categoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShareEaseAPI.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ShareEaseAPI.Models.UserModel", b =>
+                {
+                    b.Navigation("BorrowerRequests");
+
+                    b.Navigation("OwnerRequests");
                 });
 #pragma warning restore 612, 618
         }

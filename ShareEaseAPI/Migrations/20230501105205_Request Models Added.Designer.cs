@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ShareEaseAPI.Data;
 
@@ -11,9 +12,11 @@ using ShareEaseAPI.Data;
 namespace ShareEaseAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230501105205_Request Models Added")]
+    partial class RequestModelsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,19 +48,16 @@ namespace ShareEaseAPI.Migrations
 
             modelBuilder.Entity("ShareEaseAPI.Models.RequestModel", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("resId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("resId"));
 
                     b.Property<int>("BorrowerId")
                         .HasColumnType("int");
 
                     b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ResourceId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("date")
@@ -66,13 +66,11 @@ namespace ShareEaseAPI.Migrations
                     b.Property<string>("status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id");
+                    b.HasKey("resId");
 
                     b.HasIndex("BorrowerId");
 
                     b.HasIndex("OwnerId");
-
-                    b.HasIndex("ResourceId");
 
                     b.ToTable("Request");
                 });
@@ -187,17 +185,9 @@ namespace ShareEaseAPI.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("ShareEaseAPI.Models.ResourceModel", "resource")
-                        .WithMany()
-                        .HasForeignKey("ResourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Borrower");
 
                     b.Navigation("Owner");
-
-                    b.Navigation("resource");
                 });
 
             modelBuilder.Entity("ShareEaseAPI.Models.ResourceModel", b =>

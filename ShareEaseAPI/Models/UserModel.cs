@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ShareEaseAPI.Models
 {
@@ -12,6 +13,13 @@ namespace ShareEaseAPI.Models
         public string location { get; set; }
         public string mobile { get; set; }
         public string avatar { get; set; }
-    }
+
+
+        [JsonIgnore]
+        public virtual ICollection<RequestModel> OwnerRequests { get; set; }
+
+        [JsonIgnore]
+        public virtual ICollection<RequestModel> BorrowerRequests { get; set; }
+        }
 
 }
