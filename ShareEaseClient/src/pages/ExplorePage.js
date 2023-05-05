@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Flex,
-  HStack,
   Input,
   InputGroup,
   InputLeftElement,
@@ -15,35 +14,45 @@ import ExploreCard from '../components/ExploreCard';
 import { getAllResource } from '../API/resource';
 import { getCategories } from '../API/category';
 import { BsSearch } from 'react-icons/bs';
-import UseAuth from '../hooks/UseAuth';
+import UseAuth from '../customHooks/UseAuth';
+import { getAllRequest } from '../API/Request';
 const ExplorePage = () => {
   const [loading, setLoading] = useState(true);
   const [resources, setResources] = useState([]);
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState('');
+  const [requestedData, setRequestedData] = useState([]);
+  const [query, setQuery] = useState('');
   const { data: AuthData } = UseAuth();
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [AuthData]);
 
   const fetchData = async () => {
-    let data = await getAllResource();
-    if (data.status) {
-      setResources(data.data);
+    const resourceData = await getAllResource();
+    const categoryData = await getCategories();
+    const requestData = await getAllRequest();
+
+    if (resourceData.status && categoryData.status && requestData.status) {
+      setResources(resourceData.data);
+      setCategories(categoryData.data);
+      setRequestedData(requestData.data);
       setLoading(false);
-    } else {
-      console.log('error');
-    }
-    data = await getCategories();
-    if (data.status) {
-      setCategories(data.data);
-      setLoading(false);
-      console.log(data.data);
     } else {
       console.log('error');
     }
   };
-
+  const requested = AuthData
+    ? requestedData.filter(
+        e => e.borrowerId === AuthData.userId && e.status !== 'pending'
+      )
+    : [];
+  const requestedIds = requested.map(e => e.resourceId);
+  console.log(requested);
+  const filteredResources = matchSorter(resources, category, {
+    keys: ['category.name'],
+  });
+  console.log(filteredResources);
   return (
     <>
       <Flex
@@ -65,28 +74,43 @@ const ExplorePage = () => {
               size="md"
               variant="filled"
               placeholder="Enter query"
-              // onChange={e => setQuery(e.target.value)}
+              onChange={e => setQuery(e.target.value)}
             />
           </InputGroup>
         </Box>
-        <Flex gap={5}>
+        <Flex gap={5} alignItems="center">
+          <Box
+            onClick={() => {
+              setCategory('');
+            }}
+            bg={category === '' ? '#F3F6F8' : '#fff'}
+            color={category === '' ? 'gray.700' : 'blackAlpha.700'}
+            p={2}
+            cursor="pointer"
+            borderRadius="md"
+            fontWeight="medium"
+          >
+            <Text>Discover</Text>
+          </Box>
+
           {categories.map(cat => (
             <Box
               bg={cat.name === category ? '#F3F6F8' : '#fff'}
               onClick={() => {
                 setCategory(cat.name);
               }}
+              color={cat.name === category ? 'gray.700' : 'blackAlpha.700'}
               p={2}
               borderRadius="md"
               cursor="pointer"
+              fontWeight="medium"
             >
-              <Text fontWeight="500" size="lg">
-                {cat.name}
-              </Text>
+              <Text>{cat.name}</Text>
             </Box>
           ))}
         </Flex>
       </Flex>
+
       <Box overflowY="scroll" height="calc(100vh - 72px)">
         {loading ? (
           <div>Loading...</div>
@@ -98,14 +122,22 @@ const ExplorePage = () => {
             m={4}
             templateColumns="repeat(auto-fill, minmax(300px, 1fr))"
           >
-            {matchSorter(resources, category, { keys: ['category.name'] }).map(
-              resource => {
-                if (resource.userId !== AuthData.userId) {
-                  return <ExploreCard data={resource} />;
-                }
-                return null;
+            {matchSorter(filteredResources, query, {
+              keys: ['name', 'location', 'description'],
+            }).map(resource => {
+              if (
+                resource.userId !== AuthData.userId &&
+                resource.availability !== 'borrowed'
+              ) {
+                return (
+                  <ExploreCard
+                    data={resource}
+                    isRequested={requestedIds.includes(resource.id)}
+                  />
+                );
               }
-            )}
+              return null;
+            })}
           </SimpleGrid>
         )}
       </Box>

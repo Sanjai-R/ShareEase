@@ -10,3 +10,4 @@ export const getCategories = async () => {
     return null;
   }
 };
+

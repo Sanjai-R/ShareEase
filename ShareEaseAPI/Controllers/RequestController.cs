@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShareEaseAPI.Data;
 using ShareEaseAPI.Dto;
+using ShareEaseAPI.Handler;
 using ShareEaseAPI.Models;
 
 namespace ShareEaseAPI.Controllers
@@ -22,7 +23,7 @@ namespace ShareEaseAPI.Controllers
             _context = context;
         }
 
-        // GET: api/Request
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<dynamic>>> GetRequest()
         {
@@ -34,11 +35,14 @@ namespace ShareEaseAPI.Controllers
                 var req = new
                 {
                     id = request.id,
+                    OwnerId = request.resource.Users.user_id,
                     Borrower = request.Borrower,
-                    ResourceName = request.resource.name,
+                    borrowerId = request.Borrower.user_id,
+                    Resource = request.resource,
                     status = request.status,
                     date = request.date,
-                    OwnerName = request.resource.Users
+                    Owner = request.resource.Users,
+                    resourceId = request.ResourceId
                 };
                 reqList.Add(req);
             }
@@ -46,7 +50,7 @@ namespace ShareEaseAPI.Controllers
 
         }
 
-        // GET: api/Request/5
+
         [HttpGet("{id}")]
         public async Task<ActionResult<RequestModel>> GetRequestModel(int id)
         {
@@ -60,8 +64,8 @@ namespace ShareEaseAPI.Controllers
             return requestModel;
         }
 
-        // PUT: api/Request/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutRequestModel(int id, RequestModel requestModel)
         {
@@ -69,6 +73,18 @@ namespace ShareEaseAPI.Controllers
             {
                 return BadRequest();
             }
+            if (requestModel.status == "approved")
+            {
+                ResourceModel resource = await _context.Resource.FindAsync(requestModel.resource.id);
+                resource.availability = "borrowed";
+                string message = "A new resource is available:\n"
+                      + $"Name: {resource.name}\n"
+                      + $"Description: {resource.description}\n"
+                      + $"Location: {resource.location}\n";
+
+                SendEmail.send( message,"Product Has Been Approved", requestModel.Borrower.email);
+                _context.Entry(resource).State = EntityState.Modified;
+}
 
             _context.Entry(requestModel).State = EntityState.Modified;
 
@@ -91,8 +107,8 @@ namespace ShareEaseAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/Request
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+
         [HttpPost]
         public async Task<ActionResult<RequestModel>> PostRequestModel(PostRequestDto requestModel)
         {
@@ -100,6 +116,7 @@ namespace ShareEaseAPI.Controllers
             {
                 BorrowerId = requestModel.BorrowerId,
                 ResourceId = requestModel.ResourceId,
+                OwnerId = 1,
                 status = "Pending",
                 date = requestModel.date
             };
@@ -109,7 +126,7 @@ namespace ShareEaseAPI.Controllers
             return CreatedAtAction("GetRequestModel", new { id = temp.id }, temp);
         }
 
-        // DELETE: api/Request/5
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRequestModel(int id)
         {

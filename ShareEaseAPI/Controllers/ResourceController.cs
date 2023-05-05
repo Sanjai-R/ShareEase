@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShareEaseAPI.Data;
+using ShareEaseAPI.Handler;
 using ShareEaseAPI.Models;
 using static ShareEaseAPI.Dto.ResourceDto;
 
@@ -46,14 +47,24 @@ namespace ShareEaseAPI.Controllers
         // PUT: api/Resource/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutResourceModel(int id, ResourceModel resourceModel)
+        public async Task<IActionResult> PutResourceModel(int id, PostResourceDto resourceModel)
         {
             if (id != resourceModel.id)
             {
                 return BadRequest();
             }
-
-            _context.Entry(resourceModel).State = EntityState.Modified;
+            ResourceModel res = new ResourceModel()
+            {
+                name = resourceModel.name,
+                description = resourceModel.description,
+                img = resourceModel.img,
+                availability = "Available",
+                location = resourceModel.location,
+                categoryId = resourceModel.categoryId,
+                UserId = resourceModel.userId,
+                id = resourceModel.id,
+            };
+            _context.Entry(res).State = EntityState.Modified;
 
             try
             {
@@ -89,6 +100,21 @@ namespace ShareEaseAPI.Controllers
                 categoryId = resourceModel.categoryId,
                 UserId = resourceModel.userId
             };
+            var subscriptions = await _context.Subscription.Where(x => x.categoryId == res.categoryId).Include(x => x.User).ToListAsync();
+            if (subscriptions != null && subscriptions.Count > 0)
+            {
+                var message = "A new resource is available:\n"
+                    + $"Name: {res.name}\n"
+                    + $"Description: {res.description}\n"
+                    + $"Location: {res.location}\n";
+
+                var recipients = new List<string>();
+                foreach (var subscription in subscriptions)
+                {
+                    SendEmail.send(message, "New Resource Available", subscription.User.email);
+                }
+
+            }
             _context.Resource.Add(res);
             await _context.SaveChangesAsync();
 
@@ -110,7 +136,19 @@ namespace ShareEaseAPI.Controllers
 
             return NoContent();
         }
+        [HttpGet("user/{id}")]
+        public async Task<IActionResult> GetResourceBasedOnUser(int id)
+        {
+            var subscription = await _context.Subscription.Where(x => x.userId == id).Include(x => x.Category).ToListAsync();
+            List<int> categoryIds = new List<int>();
+            foreach (var sub in subscription)
+            {
+                categoryIds.Add(sub.categoryId);
+            }
+            var resources = await _context.Resource.Where(x => categoryIds.Contains(x.categoryId)).Include(x => x.Category).ToListAsync();
 
+            return Ok(resources);
+        }
         private bool ResourceModelExists(int id)
         {
             return _context.Resource.Any(e => e.id == id);

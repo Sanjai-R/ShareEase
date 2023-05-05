@@ -14,27 +14,35 @@ import {
   ModalCloseButton,
   Text,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import UseAuth from '../customHooks/UseAuth';
 import React from 'react';
 import moment from 'moment';
-import { postRequest } from '../API/Request';
-import { useNavigate } from 'react-router-dom';
-const ExploreCard = ({ data, isRequested = false }) => {
+import { Link } from 'react-router-dom';
+import { deleteResource } from '../API/resource';
+const ResourceCard = ({ data }) => {
   const { id, name, description, img, location, availability } = data;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: authData } = UseAuth();
-  const navigate = useNavigate();
+  const toast = useToast();
   const handleRequest = async () => {
-    const now = moment();
-
-    const res = await postRequest({
-      resourceId: id,
-      borrowerId: authData.userId,
-      date: now.format(),
-    });
+    const res = await deleteResource(id);
     if (res.status) {
-      navigate('/dashboard');
+      toast({
+        title: `Resource deleted successfully`,
+        status: 'success',
+        isClosable: true,
+        position: 'top-right',
+      });
+      window.location.reload();
+    } else {
+      toast({
+        title: `Something went wrong`,
+        status: 'error',
+        isClosable: true,
+        position: 'top-right',
+      });
     }
   };
   return (
@@ -54,29 +62,41 @@ const ExploreCard = ({ data, isRequested = false }) => {
           <Text>{location}</Text>
         </Flex>
         <Text>{description}</Text>
-        <Button
-          w="full"
-          colorScheme={isRequested ? 'red' : 'brand'}
-          isDisabled={isRequested}
-          onClick={onOpen}
-        >
-          {isRequested ? 'Requested' : 'Request'}
-        </Button>
+        <Flex gap="5px" w="100%">
+          {availability !== 'borrowed' && (
+            <Button
+              w="50%"
+              as={Link}
+              to={`/EditResource/${id}`}
+              colorScheme="gray"
+            >
+              Edit
+            </Button>
+          )}
+
+          <Button
+            w={availability === 'borrowed' ? 'full' : '50%'}
+            colorScheme="red"
+            onClick={onOpen}
+          >
+            Delete
+          </Button>
+        </Flex>
         <Modal isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>
               <Heading size="md" fontWeight="700">
-                Request Confirmation
+                Delete Confirmation
               </Heading>
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <Text>Are you confirm this request </Text>
+              <Text> Are you sure you want to delete this resource? </Text>
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="brand" mr={3} onClick={handleRequest}>
-                Request
+              <Button colorScheme="red" mr={3} onClick={handleRequest}>
+                Delete
               </Button>
               <Button variant="ghost" onClick={onClose}>
                 Cancel
@@ -89,4 +109,4 @@ const ExploreCard = ({ data, isRequested = false }) => {
   );
 };
 
-export default ExploreCard;
+export default ResourceCard;

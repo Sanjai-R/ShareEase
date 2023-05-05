@@ -20,7 +20,7 @@ const Layout = () => {
       templateColumns="repeat(6, 1fr)"
       bg="gray.100"
     >
-      <GridItem rowSpan={2} colSpan={1} p={5} bg="gray.50">
+      <GridItem rowSpan={2} colSpan={1} p={5} bg="#fff">
         <SideBar />
       </GridItem>
       <GridItem colSpan={5}>

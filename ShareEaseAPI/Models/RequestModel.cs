@@ -25,7 +25,6 @@ namespace ShareEaseAPI.Models
         public virtual UserModel Borrower { get; set; }
 
         public virtual UserModel Owner { get; set; }
-
         public virtual ResourceModel resource { get; set; }
     }
 }

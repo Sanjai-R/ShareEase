@@ -8,17 +8,19 @@ import {
   Input,
   Select,
   Stack,
-  Text,
   Textarea,
   useToast,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
-import { getCategories } from '../API/category';
-import UseAuth from '../customHooks/UseAuth';
-import { PostResource } from '../API/resource';
-import { Navigate, useNavigate } from 'react-router-dom';
 
-const UploadForm = () => {
+// import { PostResource } from '../API/resource';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import UseAuth from '../../customHooks/UseAuth';
+import { getCategories } from '../../API/category';
+import { getResourceById, updateResource } from '../../API/resource';
+
+const EditResource = () => {
+  const { id } = useParams();
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -38,6 +40,16 @@ const UploadForm = () => {
       setCategories(data.data);
       console.log(data.data);
     }
+    data = await getResourceById(id);
+    if (data.status) {
+      setFormData({
+        name: data.data.name,
+        description: data.data.description,
+        img: data.data.img,
+        location: data.data.location,
+        category: data.data.categoryId,
+      });
+    }
   };
   useEffect(() => {
     fetchData();
@@ -50,8 +62,7 @@ const UploadForm = () => {
   const handleFormSubmit = async event => {
     event.preventDefault();
 
-    const { name, description, img, location, availability, category } =
-      formData;
+    const { name, description, img, location, category } = formData;
     console.log(formData);
     if (!name || !description || !img || !location || !category) {
       toast({
@@ -61,15 +72,15 @@ const UploadForm = () => {
         position: 'top-right',
       });
     } else {
-      const res = await PostResource({
+      const res = await updateResource(id, {
         ...formData,
         categoryId: category,
         userId: data.userId,
+        id,
       });
-
       if (res.status) {
         toast({
-          title: `Resource uploaded successfully`,
+          title: `Resource updated successfully`,
           status: 'success',
           isClosable: true,
           position: 'top-right',
@@ -93,9 +104,7 @@ const UploadForm = () => {
       }
     }
   };
-  const [value, setValue] = useState('');
-  const maxLength = 100;
-  const remainingWords = maxLength - value.split(' ').length;
+
   return (
     <Box bg="gray.100" overflowY="scroll" height="100vh">
       <Center flexDirection="column">
@@ -123,19 +132,13 @@ const UploadForm = () => {
 
             <FormControl id="description" mb={2} size="xs">
               <FormLabel>Description:</FormLabel>
-
               <Textarea
                 type="text"
                 name="description"
-                maxLength={maxLength}
-                maxWording={`Remaining words: ${remainingWords}`}
                 value={formData.description}
                 onChange={handleInputChange}
                 placeholder="Enter your Resource Description"
               />
-              <Text fontSize="sm" color="gray.500">
-                Maximum words: {maxLength}
-              </Text>
             </FormControl>
             <FormControl id="category" mb={2} size="xs">
               <FormLabel>Category:</FormLabel>
@@ -187,4 +190,4 @@ const UploadForm = () => {
   );
 };
 
-export default UploadForm;
+export default EditResource;
