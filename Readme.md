@@ -1,5 +1,3 @@
-# Resource Sharing Platform
-
 # ShareEase
 
 This project aims to create a web-based platform that enables users to share and access resources such as books, equipment, and tools. The platform aims to promote community building and reduce waste by allowing people to lend or borrow items they may not need all the time.
