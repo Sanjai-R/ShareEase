@@ -1,20 +1,13 @@
 import {
   Box,
   Button,
-  Center,
   Container,
   Flex,
-  Grid,
-  GridItem,
   Heading,
-  IconButton,
-  Image,
   SimpleGrid,
   Stack,
   Text,
-  VStack,
 } from '@chakra-ui/react';
-import { FaHeart, FaShoppingCart } from 'react-icons/fa';
 import ExploreCard from '../components/ExploreCard';
 import { getRecommendation } from '../API/resource';
 import { useEffect, useState } from 'react';

@@ -34,7 +34,7 @@ const Category = () => {
 
     if (res.status) {
       setSubscription(res.data);
-      console.log(subscription);
+     
     }
     const category = await getCategories();
     if (category.status) {
@@ -46,7 +46,7 @@ const Category = () => {
     fetchData();
   }, [data]);
   const categoryIds = subscription.map(item => item.category.id);
-  console.log(categoryIds);
+
   const basicBoxStyles = {
     cursor: 'pointer',
     boxSize: '250px',
@@ -64,7 +64,7 @@ const Category = () => {
   };
   const toast = useToast();
   const addCategory = () => {
-    console.log(data.userId);
+  
     if (data) {
       subscriptionId.forEach(async id => {
         const res = await addSubscription(id, data.userId);

@@ -14,7 +14,7 @@ const Contribution = () => {
     const res = await getContributions(data?.userId);
     setNumApprovedRequests(res?.numApprovedRequests);
     setNumReceivedRequests(res?.numReceivedRequests);
-    console.log(res);
+   
   };
   //   getContributions();
   return (

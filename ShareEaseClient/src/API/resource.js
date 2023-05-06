@@ -42,7 +42,7 @@ export const PostResource = async data => {
   }
 };
 export const updateResource = async (id, data) => {
-  console.log(data);
+ 
   try {
     const response = await axios.put(`${BASE_URL}/Resource/${id}`, data);
     if (response.status === 204 || response.status === 200) {

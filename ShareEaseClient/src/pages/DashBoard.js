@@ -19,18 +19,13 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Text,
   useDisclosure,
   useToast,
   ButtonGroup,
 } from '@chakra-ui/react';
 import UseAuth from '../customHooks/UseAuth';
-import { matchSorter } from 'match-sorter';
-
-import PdfDownload from '../components/PdfDownload';
 import PDFDownloadButton from '../components/PdfDownload';
 import BadgeContainer from '../container/BadgeContaine';
-import { getUserPoint } from '../utils/badgePointCalc';
 import LeaderBoard from '../container/LeaderBoard';
 import Contribution from '../container/Contribution';
 

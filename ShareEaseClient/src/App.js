@@ -9,7 +9,7 @@ import Profile from './pages/Profile';
 import Dashboard from './pages/DashBoard';
 import EditResource from './pages/Resource/EditResource';
 import Request from './pages/Request';
-import Home from './pages/HomePage';
+
 function App() {
   return (
     <Router>

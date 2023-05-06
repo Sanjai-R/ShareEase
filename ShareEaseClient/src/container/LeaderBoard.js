@@ -35,6 +35,9 @@ const LeaderBoard = () => {
                 Rank
               </Th>
               <Th color="#000" fontSize="md">
+                Avatar
+              </Th>
+              <Th color="#000" fontSize="md">
                 Username
               </Th>
               <Th color="#000" fontSize="md">
@@ -55,7 +58,10 @@ const LeaderBoard = () => {
                   <Text fontWeight="medium">{index + 1} </Text>
                 </Td>
                 <Td>
-                  <Avatar name={request.user.username}></Avatar>
+                  <Avatar size="sm" name={request.user.username} />
+                </Td>
+                <Td>
+                  <Text fontWeight="medium">{request.user.username} </Text>
                 </Td>
                 <Td>
                   <Text fontWeight="medium">{request.points} CP</Text>

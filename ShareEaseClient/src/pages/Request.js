@@ -10,7 +10,6 @@ import {
   Tr,
   Th,
   Td,
-  Badge,
   ButtonGroup,
   Modal,
   ModalOverlay,
@@ -29,7 +28,6 @@ const Request = () => {
   const [requests, setRequests] = useState([]);
   const { data } = UseAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [loading, setLoading] = useState(false);
   const fetchData = async () => {
     const res = await getAllRequest();
     if (res.status) {
@@ -51,7 +49,6 @@ const Request = () => {
       });
       onClose();
       fetchData();
-      setLoading(false);
     } else {
       toast({
         title: `Something went wrong`,
@@ -63,7 +60,6 @@ const Request = () => {
   };
 
   const approveRequest = async data => {
-    setLoading(true);
     const { id } = data;
     console.log(data);
     const res = await putRequest(id, { ...data, status: 'approved' });
@@ -130,7 +126,6 @@ const Request = () => {
                           {request.status.toUpperCase() ===
                             'Pending'.toUpperCase() && (
                             <Button
-                              // isLoading={loading}
                               colorScheme="green"
                               onClick={() => {
                                 approveRequest(request);

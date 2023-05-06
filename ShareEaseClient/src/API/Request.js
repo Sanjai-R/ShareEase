@@ -16,7 +16,7 @@ export const getAllRequest = async data => {
 };
 
 export const postRequest = async data => {
-  console.log(data);
+
   try {
     const response = await axios.post(`${BASE_URL}/Request`, data);
     if (response.status === 201 || response.status === 200) {

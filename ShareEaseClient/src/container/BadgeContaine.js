@@ -42,7 +42,7 @@ const BadgeContainer = () => {
         }
       }
       setNextLevel(next);
-      console.log(current);
+      
       setCurrentLevel(current);
       setPointToReachNextLevel(pointsToNextLevel);
     }
@@ -52,7 +52,7 @@ const BadgeContainer = () => {
       const res = await getUserPoint(data?.userId);
       const temp = await res.find(obj => obj.user.user_id === data?.userId);
       setBadgeData(temp);
-      console.log(res);
+     
       getLevel();
       setLoading(false);
     }
@@ -85,8 +85,8 @@ const BadgeContainer = () => {
         </Flex>
         <Box w="full">
           <Flex w="full" mb="2" justifyContent="space-between">
-            <Text>{currentLevel}</Text>
-            <Text>{nextLevel}</Text>
+            <Text>Level 1</Text>
+            <Text>Level 2</Text>
           </Flex>
           <Progress
             borderRadius="full"

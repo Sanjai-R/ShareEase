@@ -39,7 +39,7 @@ const NavBar = () => {
       setUserData(JSON.parse(userData));
     }
   }, []);
-  console.log(isLogged && userData.role);
+
   const handleLogout = () => {
     onClose(); // Close the logout confirmation modal
     localStorage.clear('profile');
