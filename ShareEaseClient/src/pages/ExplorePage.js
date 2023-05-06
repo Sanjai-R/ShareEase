@@ -47,11 +47,11 @@ const ExplorePage = () => {
       )
     : [];
   const requestedIds = requested.map(e => e.resourceId);
-  console.log(requested);
+
   const filteredResources = matchSorter(resources, category, {
     keys: ['category.name'],
   });
-  console.log(filteredResources);
+
   return (
     <>
       <Flex

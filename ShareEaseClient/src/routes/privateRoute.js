@@ -7,7 +7,6 @@ const PrivateRoute = () => {
   useEffect(() => {
     const userToken = localStorage.getItem('profile');
     if (JSON.parse(userToken)) {
-      console.log(true);
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);

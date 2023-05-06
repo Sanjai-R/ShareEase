@@ -61,7 +61,7 @@ const Request = () => {
 
   const approveRequest = async data => {
     const { id } = data;
-    console.log(data);
+
     const res = await putRequest(id, { ...data, status: 'approved' });
     triggerToast(res, 'Request approved successfully');
   };

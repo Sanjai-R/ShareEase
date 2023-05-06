@@ -38,7 +38,7 @@ const EditResource = () => {
     let data = await getCategories();
     if (data.status) {
       setCategories(data.data);
-      console.log(data.data);
+     
     }
     data = await getResourceById(id);
     if (data.status) {
@@ -63,7 +63,7 @@ const EditResource = () => {
     event.preventDefault();
 
     const { name, description, img, location, category } = formData;
-    console.log(formData);
+   
     if (!name || !description || !img || !location || !category) {
       toast({
         title: `Check your inputs`,

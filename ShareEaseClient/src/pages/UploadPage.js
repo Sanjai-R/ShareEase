@@ -36,7 +36,7 @@ const UploadForm = () => {
     let data = await getCategories();
     if (data.status) {
       setCategories(data.data);
-      console.log(data.data);
+      
     }
   };
   useEffect(() => {
@@ -50,9 +50,9 @@ const UploadForm = () => {
   const handleFormSubmit = async event => {
     event.preventDefault();
 
-    const { name, description, img, location, availability, category } =
+    const { name, description, img, location, category } =
       formData;
-    console.log(formData);
+   
     if (!name || !description || !img || !location || !category) {
       toast({
         title: `Check your inputs`,
