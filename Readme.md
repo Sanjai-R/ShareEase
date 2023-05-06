@@ -16,6 +16,30 @@ This project aims to create a web-based platform that enables users to share and
 - **Backend** - [ASP.NET](http://ASP.NET) Core Web API,
 - **Database** - SQL Server
 
-# DB Design
+# **DB Design**
 
 ![Untitled](Assets/db.png)
+
+# **SnapShots**
+
+![Screenshot 2023-05-05 104220.png](Assets/Screenshot_2023-05-05_104220.png)
+
+![Untitled](Assets/Untitled%201.png)
+
+![Untitled](Assets/Untitled%202.png)
+
+![Untitled](Assets/Untitled%203.png)
+
+![Untitled](Assets/Untitled%204.png)
+
+![Untitled](Assets/Untitled%205.png)
+
+![Untitled](Assets/Untitled%206.png)
+
+![Untitled](Assets/Untitled%207.png)
+
+![Untitled](Assets/Untitled%208.png)
+
+![Untitled](Assets/Untitled%209.png)
+
+![Untitled](Assets/Untitled%2010.png)
